@@ -1,10 +1,13 @@
 'use strict'
 
 const TransactionHandler    = require('sawtooth-sdk/processor/handler').TransactionHandler
+const InvalidTransaction    = require('sawtooth-sdk/processor/exceptions').InvalidTransaction
 const BloodPayload          = require('./blood_payload')
 
+const BloodState        = require('./blood_state').BloodState
 const BLOOD_FAMILY      = require('./blood_state').BLOOD_FAMILY
 const BLOOD_NAMESPACE   = require('./blood_state').BLOOD_NAMESPACE
+
 
 class BloodHandler extends TransactionHandler {
     constructor() {
@@ -12,7 +15,42 @@ class BloodHandler extends TransactionHandler {
     }
 
     apply(transactionProcessRequest, context) {
-        console.log(transactionProcessRequest)
+
+        let payload     = BloodPayload.fromBytes(transactionProcessRequest.payload)
+        let bloodState  = new BloodState(context)
+
+        if(payload.action === 'create') {
+            return bloodState.getDonation(payload.id)
+                .then((donation) => {
+                    if(donation !== undefined) {
+                        throw new InvalidTransaction('Invalid Action: Blood donation already exists')
+                    }
+
+                    let createdDonation = {
+                        id: payload.id,
+                        blood: {
+                            temperature: payload.temperature,
+                            weight: payload.weight
+                        }
+                    }
+
+                    console.log("Blood donation registered succesfully")
+
+                    return bloodState.createDonation(payload.id, createdDonation)
+                })
+
+        } else if(payload.action === 'update') {
+
+        } else if(payload.action === 'finalize') {
+
+        } else {
+            throw new InvalidTransaction('Invalid action')
+        }
+        //console.log("++++ Transaction ++++")
+        //console.log(transactionProcessRequest)
+
+        //console.log("++++ Context ++++")
+        //console.log(context)
     }
 }
 

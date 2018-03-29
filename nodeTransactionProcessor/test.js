@@ -1,22 +1,37 @@
 const createContext = require('sawtooth-sdk/signing').createContext
 const CryptoFactory = require('sawtooth-sdk/signing').CryptoFactory
-
+const crypto        = require('crypto')
 const context = createContext('secp256k1')
 const privateKey = context.newRandomPrivateKey()
-console.log(privateKey)
 const signer = new CryptoFactory(context).newSigner(privateKey)
 
-let payload = ["idUno","tempDos","weightTres"]
+let payload = ["idUno","tempDos","weightTres","create"]
+let id = payload[0]
 payload = Buffer.from(payload.join(','))
 
 const createHash = require('crypto').createHash
 const protobuf = require('sawtooth-sdk').protobuf
 
+
+// Function that creates a new hash for parameter 'x'
+const createBloodHash = (x) => crypto.createHash('sha512').update(x).digest('hex').toLowerCase().substring(0, 64)
+
+// Custom transaction family we are creating
+const BLOOD_FAMILY = 'blood'
+
+// Creates the hash corresponding to the transaction family
+const BLOOD_NAMESPACE = createBloodHash(BLOOD_FAMILY).substring(0, 6)
+
+// Paste bloodspace plus the hash generated
+const makeBloodAddress = (x) => BLOOD_NAMESPACE + createBloodHash(x)
+
+let bloodAddress = makeBloodAddress(id)
+
 const transactionHeaderBytes = protobuf.TransactionHeader.encode({
     familyName: 'blood',
     familyVersion: '1.0',
-    inputs: ['1cf1266e282c41be5e4254d8820772c5518a2c5a8c0c7f7eda19594a7eb539453e1ed7'],
-    outputs: ['1cf1266e282c41be5e4254d8820772c5518a2c5a8c0c7f7eda19594a7eb539453e1ed7'],
+    inputs: [bloodAddress],
+    outputs: [bloodAddress],
     signerPublicKey: signer.getPublicKey().asHex(),
     batcherPublicKey: signer.getPublicKey().asHex(),
     payloadSha512: createHash('sha512').update(payload).digest('hex')
@@ -50,7 +65,7 @@ const batchListBytes = protobuf.BatchList.encode({
 
 const request = require('request')
 request.post({
-    url: 'http://18.233.20.241:8008/batches',
+    url: 'http://localhost:8024/batches',
     body: batchListBytes,
     headers: {'Content-Type': 'application/octet-stream'}
 }, (err, response) => {

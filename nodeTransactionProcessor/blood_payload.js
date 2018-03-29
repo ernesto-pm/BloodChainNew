@@ -7,16 +7,17 @@
 const InvalidTransaction = require('sawtooth-sdk/processor/exceptions').InvalidTransaction
 
 class BloodPayload {
-    constructor(id, temperature, weight) {
+    constructor(id, temperature, weight, action) {
         this.id             = id
         this.temperature    = temperature
         this.weight         = weight
+        this.action         = action
     }
 
     static fromBytes(payload) {
         payload = payload.toString().split(',')
-        if(payload.length == 3) {
-            let bloodPayload = new BloodPayload(payload[0], payload[1], payload[2])
+        if(payload.length === 4) {
+            let bloodPayload = new BloodPayload(payload[0], payload[1], payload[2], payload[3])
 
             if(!bloodPayload.id) {
                 throw new InvalidTransaction('ID is required')
@@ -28,6 +29,10 @@ class BloodPayload {
 
             if(!bloodPayload.weight) {
                 throw new InvalidTransaction('Weight is required')
+            }
+
+            if(!bloodPayload.action) {
+                throw new InvalidTransaction('Action is required')
             }
 
             return bloodPayload
