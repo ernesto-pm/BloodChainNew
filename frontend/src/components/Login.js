@@ -11,7 +11,6 @@ import {
 import FlatButton from "material-ui/FlatButton";
 import { MuiThemeProvider } from "material-ui/styles";
 import Logo from "../images/BloodChain.png";
-import AppBar from "material-ui/AppBar";
 import Icon from "../images/iconDrop.png";
 import Send from "material-ui/svg-icons/content/send";
 import FloatingActionButton from "material-ui/FloatingActionButton";
@@ -19,39 +18,32 @@ import TextField from "material-ui/TextField";
 import "./App.css";
 import _ from "lodash";
 import { Link } from "react-router-dom";
+import NavBar from "./NavBar";
+import { connect } from "react-redux";
+import * as action from "./reducers/actions";
+import { selectors } from "./reducers";
 
 const style = {
   marginLeft: "95%"
 };
 
 const initialState = {
-  users: [
-    {
-      id: 1,
-      username: "dany",
-      password: "1234",
-      type: "hospital"
-    },
-    {
-      id: 2,
-      username: "ernie",
-      password: "1234",
-      type: "hospital"
-    },
-    { id: 3, username: "itzi", password: "1234", type: "bank" },
-    { id: 4, username: "keki", password: "1234", type: "bank" }
-  ],
+  username: "",
+  password: "",
   logged: false
 };
 
 class Login extends Component {
   constructor(props) {
     super();
-    this.state = { initialState };
+    this.state = initialState;
   }
-
   componentDidMount() {
-    this.setState(initialState);
+    this.setState({
+      username: "",
+      password: "",
+      logged: false
+    });
   }
   handleChange = e => {
     const { target: { name, value } } = e;
@@ -60,14 +52,15 @@ class Login extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const { username, password } = this.state;
+    console.log(this.props.users);
     this.confirmUser(username, password);
   };
 
   confirmUser = (username, passw) => {
-    _.find(this.state.users, user => {
+    _.find(this.props.users, user => {
       if (user.username === username && user.password === passw) {
         return this.setState({
-          ...initialState,
+          ...this.state,
           logged: true
         });
       } else {
@@ -86,10 +79,7 @@ class Login extends Component {
     return (
       <div>
         <MuiThemeProvider>
-          <AppBar
-            title="Login"
-            iconClassNameRight="muidocs-icon-navigation-expand-more"
-          />
+          <NavBar />
         </MuiThemeProvider>
         <MuiThemeProvider>
           <div className="LoginForm">
@@ -137,5 +127,11 @@ class Login extends Component {
     );
   }
 }
+const withRedux = connect(
+  state => ({
+    users: selectors.getUserList(state)
+  }),
+  null
+);
 
-export default withRouter(Login);
+export default withRedux(Login);
