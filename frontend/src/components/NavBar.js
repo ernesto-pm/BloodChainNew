@@ -42,6 +42,11 @@ export default class NavBar extends React.Component {
               primaryText="Home"
             />
             <ListItem
+              containerElement={<Link to="/user/1/transactions" />}
+              onClick={this.handleToggle}
+              primaryText="Transactions"
+            />
+            <ListItem
               containerElement={<Link to="/" />}
               onClick={this.handleToggle}
               primaryText="Logout"

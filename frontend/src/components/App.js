@@ -9,6 +9,7 @@ import { createStore } from "redux";
 import { Provider } from "react-redux";
 import appReducer from "./reducers";
 import PatientForm from "./PatientForm";
+import Transactions from "./Transactions";
 
 const store = createStore(appReducer);
 
@@ -23,6 +24,11 @@ class App extends Component {
             <Route exact path="/login" component={Login} />
             <Route exact path="/home" component={Home} />
             <Route exact path="/patients/new" component={PatientForm} />
+            <Route
+              exact
+              path="/user/:id/transactions"
+              component={Transactions}
+            />
           </div>
         </BrowserRouter>
       </Provider>
