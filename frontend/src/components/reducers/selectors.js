@@ -10,14 +10,9 @@ const getUser = (state, id) => {
   return foundUser ? { id, ...foundUser } : null;
 };
 
-const getPatientList = state => {
-  return _.map(state.userList, id => getPatient(state, getUser(state, id).id));
-};
-
-const getPatient = (state, id) => {
-  const foundPatient = state.users[id].patients;
-  console.log(foundPatient);
-  return foundPatient ? { ...foundPatient } : null;
+const getPatientList = (state, id) => {
+  console.log(state.users[id].patients);
+  return state.users[id].patients;
 };
 
 export default {

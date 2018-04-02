@@ -3,16 +3,23 @@ import "./Home.css";
 import ListItem from "material-ui/List/ListItem";
 import List from "material-ui/List/List";
 import Avatar from "material-ui/Avatar";
-const PatientCard = patients => (
+const PatientCard = patient => (
   <div className="card">
     <List>
-      <ListItem disabled={true} leftAvatar={<Avatar>A+</Avatar>}>
+      <ListItem
+        disabled={true}
+        leftAvatar={<Avatar>{patient.patient.bloodType}</Avatar>}
+      >
         <div className="container">
           <h4>
-            {/* <pre>{JSON.stringify(patients[0], null, 2)}</pre> */}
-            <b>John Cahl</b>
+            <b>{patient.patient.name}</b>
           </h4>
-          <p>Diabetes - Type 1</p>
+          {patient.patient.diseases.map((disease, i) => (
+            <div key={i}>
+              {disease.name} - {disease.description}
+            </div>
+          ))}
+          {patient.patient.age} years
         </div>
       </ListItem>
       <br />

@@ -8,6 +8,7 @@ import Home from "./Home";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 import appReducer from "./reducers";
+import PatientForm from "./PatientForm";
 
 const store = createStore(appReducer);
 
@@ -21,6 +22,7 @@ class App extends Component {
             <Route exact path="/singup" component={Singup} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/home" component={Home} />
+            <Route exact path="/patients/new" component={PatientForm} />
           </div>
         </BrowserRouter>
       </Provider>

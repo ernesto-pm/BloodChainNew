@@ -18,7 +18,7 @@ const initialState = {
       patients: [
         {
           id: 1,
-          name: "Juan Franco",
+          name: "Juan José Franco",
           type: "donor",
           bloodType: "A+",
           weight: 75,
@@ -34,17 +34,17 @@ const initialState = {
         },
         {
           id: 2,
-          name: "Susana Rdz",
+          name: "Susana Moreno",
           type: "donor",
           bloodType: "O+",
-          weight: 75,
-          height: 1.7,
+          weight: 68,
+          height: 1.66,
           sex: "F",
-          age: 30,
+          age: 25,
           diseases: [
             {
-              name: "Diabetes",
-              description: "Type 1"
+              name: "Asthma",
+              description: "Chronic"
             }
           ]
         }
@@ -88,6 +88,28 @@ const handleDeleteUser = (state, { id }) => {
   };
 };
 
+const handleAddPatient = (state, { patient, user }) => {
+  const id = simpleId();
+  return console.log("PATIENT", user, patient);
+
+  //     const { idUser, ...rest } = user;
+  //   return {
+  //     ...state,
+  //     userList: [...state.userList],
+  //     users: {
+  //       ...state.users,
+  //       [idUser]: _.merge({}, state.users[idUser], .rest, patients: {
+
+  //       [id]: patient
+  //       })
+  //     }
+  //   };
+  //     }
+  //     patientList: [...state.userList, id],
+  //     patients: { ...state.users, [id]: user }
+  //   };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case types.ADD_USER:
@@ -96,6 +118,8 @@ const reducer = (state = initialState, action) => {
       return handleDeleteUser(state, action.payload);
     case types.UPDATE_USER:
       return handleUpdateUser(state, action.payload);
+    case types.ADD_PATIENT:
+      return handleAddPatient(state, action.payload);
     default:
       return state;
   }

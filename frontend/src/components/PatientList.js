@@ -7,9 +7,8 @@ import PatientCard from "./PatientCard";
 
 const PatientList = ({ patients }) => (
   <div className="list">
-    {/* <pre>{JSON.stringify(patients, null, 2)}</pre> */}
     <ul>
-      {patients.map((patient, i) => <PatientCard patients={patient} key={i} />)}
+      {patients.map((patient, i) => <PatientCard patient={patient} key={i} />)}
     </ul>
   </div>
 );

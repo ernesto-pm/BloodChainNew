@@ -20,3 +20,10 @@ export const deleteUser = id => ({
     id
   }
 });
+
+export const addPatient = patient => ({
+  type: types.ADD_PATIENT,
+  payload: {
+    patient
+  }
+});
