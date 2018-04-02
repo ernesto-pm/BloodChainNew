@@ -26,7 +26,7 @@ export default class NavBar extends React.Component {
     return (
       <div>
         <AppBar
-          onLeftIconButtonTouchTap={this.handleToggle.bind(this)}
+          onLeftIconButtonClick={this.handleToggle.bind(this)}
           title={<span style={style.title}>BloodChain</span>}
         />
         <Drawer
@@ -38,12 +38,12 @@ export default class NavBar extends React.Component {
           <List>
             <ListItem
               containerElement={<Link to="/home" />}
-              onTouchTap={this.handleToggle}
+              onClick={this.handleToggle}
               primaryText="Home"
             />
             <ListItem
               containerElement={<Link to="/" />}
-              onTouchTap={this.handleToggle}
+              onClick={this.handleToggle}
               primaryText="Logout"
             />
           </List>
