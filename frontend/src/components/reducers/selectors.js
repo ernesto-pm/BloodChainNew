@@ -1,21 +1,15 @@
 import _ from "lodash";
 
-const getUserList = state => {
-  console.log("selector", state.userList);
-  return _.map(state.userList, id => getUser(state, id));
+const getPatientList = state => {
+  console.log("selector", state.patientList);
+  return _.map(state.patientList, id => getPatient(state, id));
 };
 
-const getUser = (state, id) => {
-  const foundUser = state.users[id];
-  return foundUser ? { id, ...foundUser } : null;
-};
-
-const getPatientList = (state, id) => {
-  console.log(state.users[id].patients);
-  return state.users[id].patients;
+const getPatient = (state, id) => {
+  const foundPatient = state.patients[id];
+  return foundPatient ? { id, ...foundPatient } : null;
 };
 
 export default {
-  getUserList,
   getPatientList
 };

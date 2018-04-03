@@ -38,8 +38,6 @@ class Home extends Component {
             <PatientList patients={patients} />
           </div>
         </MuiThemeProvider>
-
-        {/* <pre>{JSON.stringify(patients, null, 2)}</pre> */}
       </div>
     );
   }
@@ -47,7 +45,7 @@ class Home extends Component {
 
 const withRedux = connect(
   state => ({
-    patients: selectors.getPatientList(state, 1)
+    patients: selectors.getPatientList(state)
   }),
   null
 );
