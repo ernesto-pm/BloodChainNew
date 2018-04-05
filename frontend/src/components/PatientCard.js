@@ -3,6 +3,7 @@ import "./Home.css";
 import ListItem from "material-ui/List/ListItem";
 import List from "material-ui/List/List";
 import Avatar from "material-ui/Avatar";
+
 const PatientCard = patient => (
   <div className="card">
     <List>
@@ -21,8 +22,9 @@ const PatientCard = patient => (
           ))}
           {patient.patient.age} years
         </div>
+
+        <br />
       </ListItem>
-      <br />
     </List>
   </div>
 );

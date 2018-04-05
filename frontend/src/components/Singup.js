@@ -184,24 +184,18 @@ class Singup extends Component {
               </FloatingActionButton>
             </form>
           </Paper>
-          <pre>{JSON.stringify(this.props.users, null, 2)}</pre>
         </MuiThemeProvider>
       </div>
     );
   }
 }
 
-const withRedux = connect(
-  state => ({
-    users: selectors.getUserList(state)
-  }),
-  dispatch => {
-    return {
-      onSubmit: user => {
-        dispatch(action.addUser(user));
-      }
-    };
-  }
-);
+const withRedux = connect(null, dispatch => {
+  return {
+    onSubmit: user => {
+      dispatch(action.addUser(user));
+    }
+  };
+});
 
 export default withRedux(Singup);

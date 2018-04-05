@@ -19,7 +19,6 @@ import "./App.css";
 import _ from "lodash";
 import { Link } from "react-router-dom";
 import NavBar from "./NavBar";
-import { connect } from "react-redux";
 import * as action from "./reducers/actions";
 import { selectors } from "./reducers";
 
@@ -28,22 +27,31 @@ const style = {
 };
 
 const initialState = {
-  username: "",
-  password: "",
+  users: [
+    {
+      id: 1,
+      username: "dany",
+      password: "1234",
+      type: "hospital"
+    },
+    {
+      id: 2,
+      username: "ernie",
+      password: "1234",
+      type: "hospital"
+    },
+    { id: 3, username: "itzi", password: "1234", type: "bank" },
+    { id: 4, username: "keki", password: "1234", type: "bank" }
+  ],
   logged: false
 };
-
 class Login extends Component {
   constructor(props) {
     super();
     this.state = initialState;
   }
   componentDidMount() {
-    this.setState({
-      username: "",
-      password: "",
-      logged: false
-    });
+    this.setState(initialState);
   }
   handleChange = e => {
     const { target: { name, value } } = e;
@@ -57,10 +65,10 @@ class Login extends Component {
   };
 
   confirmUser = (username, passw) => {
-    _.find(this.props.users, user => {
+    _.find(this.state.users, user => {
       if (user.username === username && user.password === passw) {
         return this.setState({
-          ...this.state,
+          ...initialState,
           logged: true
         });
       } else {
@@ -127,11 +135,5 @@ class Login extends Component {
     );
   }
 }
-const withRedux = connect(
-  state => ({
-    users: selectors.getUserList(state)
-  }),
-  null
-);
 
-export default withRedux(Login);
+export default withRouter(Login);
