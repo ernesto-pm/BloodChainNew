@@ -2,7 +2,8 @@
 
 const TransactionHandler    = require('sawtooth-sdk/processor/handler').TransactionHandler
 const InvalidTransaction    = require('sawtooth-sdk/processor/exceptions').InvalidTransaction
-const BloodPayload          = require('./blood_payload')
+const BloodPayload          = require('./blood_payload').BloodPayload
+const CreateAgentPayload    = require('./blood_payload').CreateAgentPayload
 
 const BloodState        = require('./blood_state').BloodState
 const BLOOD_FAMILY      = require('./blood_state').BLOOD_FAMILY
@@ -14,9 +15,18 @@ class BloodHandler extends TransactionHandler {
         super(BLOOD_FAMILY, ['1.0'], BLOOD_NAMESPACE)
     }
 
-    apply(transactionProcessRequest, context) {
+    apply(transaction, context) {
 
-        let payload     = BloodPayload.fromBytes(transactionProcessRequest.payload)
+        let payload = BloodPayload.fromBytes(transaction.payload)
+
+        if(payload instanceof CreateAgentPayload) {
+            //console.log("Payload is Instance of Create Agent")
+            //console.log("Payload ->", payload);
+        }
+
+
+
+        /*
         let bloodState  = new BloodState(context)
 
         if(payload.action === 'create') {
@@ -51,6 +61,7 @@ class BloodHandler extends TransactionHandler {
 
         //console.log("++++ Context ++++")
         //console.log(context)
+        */
     }
 }
 
