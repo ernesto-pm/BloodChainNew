@@ -34,7 +34,7 @@ const initialState = {
   city: "",
   zipCode: "",
   type: 1,
-  typeName: ""
+  typeName: "Hospital"
 };
 class Singup extends Component {
   constructor(props) {
@@ -81,6 +81,7 @@ class Singup extends Component {
       typeName
     };
     this.props.onSubmit(user);
+    this.props.history.push("/home");
   };
 
   render() {

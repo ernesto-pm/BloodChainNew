@@ -27,11 +27,14 @@ const style = {
 
 const initialState = {
   name: "",
-  type: "",
-  bloodType: "",
+  type: 1,
+  typeName: "Donor",
+  bloodType: "A+",
+  bloodTypeValue: 1,
   weight: "",
   height: "",
-  sex: "",
+  sex: "F",
+  sexValue: 1,
   age: "",
   diseases: [
     {
@@ -60,29 +63,52 @@ class Singup extends Component {
     }
   };
 
+  handleBloodTypeChange = (event, index, value) => {
+    if (value === 1) {
+      this.setState({ bloodTypeValue: value, bloodType: "A+" });
+    } else {
+      this.setState({ bloodTypeValue: value, bloodType: "O+" });
+    }
+  };
+
+  handleSexChange = (event, index, value) => {
+    if (value === 1) {
+      this.setState({ sexValue: value, typeName: "F" });
+    } else {
+      this.setState({ sexValue: value, typeName: "M" });
+    }
+  };
+
   handleSubmit = e => {
     e.preventDefault();
     const {
       name,
       type,
+      typeName,
       bloodType,
+      bloodTypeValue,
       weight,
       height,
       sex,
+      sexValue,
       age,
       diseases: [{ nameD, description }]
     } = this.state;
     const patient = {
       name,
       type,
+      typeName,
       bloodType,
+      bloodTypeValue,
       weight,
       height,
       sex,
+      sexValue,
       age,
       diseases: [{ nameD, description }]
     };
     this.props.onSubmit(patient);
+    this.props.history.push("/home");
   };
 
   render() {
@@ -125,16 +151,16 @@ class Singup extends Component {
               </SelectField>
               <SelectField
                 floatingLabelText="bloodType"
-                value={this.state.bloodType}
-                onChange={this.handleTypeChange}
+                value={this.state.bloodTypeValue}
+                onChange={this.handleBloodTypeChange}
               >
                 <MenuItem value={1} primaryText="A+" />
                 <MenuItem value={2} primaryText="O+" />
               </SelectField>
               <SelectField
                 floatingLabelText="sex"
-                value={this.state.sex}
-                onChange={this.handleTypeChange}
+                value={this.state.sexValue}
+                onChange={this.handleSexChange}
               >
                 <MenuItem value={1} primaryText="F" />
                 <MenuItem value={2} primaryText="M" />
@@ -196,7 +222,6 @@ class Singup extends Component {
             </form>
           </Paper>
         </MuiThemeProvider>
-        <pre>{JSON.stringify(this.props.users, null, 2)}</pre>
       </div>
     );
   }

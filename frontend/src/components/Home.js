@@ -9,6 +9,10 @@ import PatientList from "./PatientList";
 import AddIcon from "material-ui/svg-icons/content/add";
 import FloatingActionButton from "material-ui/FloatingActionButton";
 import { Link } from "react-router-dom";
+import Avatar from "material-ui/Avatar";
+import Logo from "../images/hospital2.svg";
+import List from "material-ui/List";
+import ListItem from "material-ui/List/ListItem";
 
 const style = {
   marginRight: 20
@@ -21,6 +25,20 @@ class Home extends Component {
         <MuiThemeProvider>
           <NavBar />
         </MuiThemeProvider>
+        <MuiThemeProvider>
+          <List>
+            <ListItem disabled={true} leftAvatar={<Avatar src={Logo} />}>
+              <h3>Hospital Ángeles</h3>
+            </ListItem>
+          </List>
+        </MuiThemeProvider>
+
+        <br />
+        <MuiThemeProvider>
+          <div className="patientList">
+            <PatientList patients={patients} />
+          </div>
+        </MuiThemeProvider>
         <div className="addIcon">
           <MuiThemeProvider>
             <FloatingActionButton
@@ -32,12 +50,6 @@ class Home extends Component {
             </FloatingActionButton>
           </MuiThemeProvider>
         </div>
-        <br />
-        <MuiThemeProvider>
-          <div className="patientList">
-            <PatientList patients={patients} />
-          </div>
-        </MuiThemeProvider>
       </div>
     );
   }

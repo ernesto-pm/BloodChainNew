@@ -1,26 +1,14 @@
 import React, { Component } from "react";
 import { withRouter, Redirect } from "react-router";
-import {
-  Card,
-  CardActions,
-  CardHeader,
-  CardMedia,
-  CardTitle,
-  CardText
-} from "material-ui/Card";
-import FlatButton from "material-ui/FlatButton";
+import { Card, CardText } from "material-ui/Card";
 import { MuiThemeProvider } from "material-ui/styles";
 import Logo from "../images/BloodChain.png";
-import Icon from "../images/iconDrop.png";
 import Send from "material-ui/svg-icons/content/send";
 import FloatingActionButton from "material-ui/FloatingActionButton";
 import TextField from "material-ui/TextField";
 import "./App.css";
 import _ from "lodash";
-import { Link } from "react-router-dom";
 import NavBar from "./NavBar";
-import * as action from "./reducers/actions";
-import { selectors } from "./reducers";
 
 const style = {
   marginLeft: "95%"
@@ -30,7 +18,7 @@ const initialState = {
   users: [
     {
       id: 1,
-      username: "dany",
+      username: "Hospital Angeles",
       password: "1234",
       type: "hospital"
     },
@@ -60,7 +48,6 @@ class Login extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const { username, password } = this.state;
-    console.log(this.props.users);
     this.confirmUser(username, password);
   };
 
