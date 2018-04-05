@@ -5,7 +5,11 @@ const context = createContext('secp256k1')
 const privateKey = context.newRandomPrivateKey()
 const signer = new CryptoFactory(context).newSigner(privateKey)
 
-let payload = ["idUno","tempDos","weightTres","create"]
+//let payload = ["idUno","tempDos","weightTres","create"]
+
+// Theory if payload is CREATE_AGENT then we need just one extra
+let payload = ["un0-1d", "CREATE_AGENT", "HospitalAngeles"]
+
 let id = payload[0]
 payload = Buffer.from(payload.join(','))
 

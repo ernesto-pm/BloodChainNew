@@ -64,8 +64,12 @@ class BloodState {
 
 }
 
+const AGENT = 'ae'
+
 // Function that creates a new hash for parameter 'x'
 const createHash = (x) => crypto.createHash('sha512').update(x).digest('hex').toLowerCase().substring(0, 64)
+
+const createSmallerHash = (x) => crypto.createHash('sha512').update(x).digest('hex').toLowerCase().substring(0, 62)
 
 // Custom transaction family we are creating
 const BLOOD_FAMILY = 'blood'
@@ -75,6 +79,8 @@ const BLOOD_NAMESPACE = createHash(BLOOD_FAMILY).substring(0, 6)
 
 // Paste bloodspace plus the hash generated
 const makeBloodAddress = (x) => BLOOD_NAMESPACE + createHash(x)
+
+const makeAgentAddress = (id) => BLOOD_NAMESPACE + AGENT + createSmallerHash(id)
 
 const deserialize = (data) => {
     let bloodArray = data.split('|')
