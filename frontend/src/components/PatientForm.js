@@ -65,9 +65,21 @@ class Singup extends Component {
 
   handleBloodTypeChange = (event, index, value) => {
     if (value === 1) {
-      this.setState({ bloodTypeValue: value, bloodType: "A+" });
-    } else {
+      this.setState({ bloodTypeValue: value, bloodType: "O-" });
+    } else if (value === 2) {
       this.setState({ bloodTypeValue: value, bloodType: "O+" });
+    } else if (value === 3) {
+      this.setState({ bloodTypeValue: value, bloodType: "A-" });
+    } else if (value === 4) {
+      this.setState({ bloodTypeValue: value, bloodType: "A+" });
+    } else if (value === 5) {
+      this.setState({ bloodTypeValue: value, bloodType: "B-" });
+    } else if (value === 6) {
+      this.setState({ bloodTypeValue: value, bloodType: "B+" });
+    } else if (value === 7) {
+      this.setState({ bloodTypeValue: value, bloodType: "AB-" });
+    } else {
+      this.setState({ bloodTypeValue: value, bloodType: "AB+" });
     }
   };
 
@@ -154,8 +166,14 @@ class Singup extends Component {
                 value={this.state.bloodTypeValue}
                 onChange={this.handleBloodTypeChange}
               >
-                <MenuItem value={1} primaryText="A+" />
+                <MenuItem value={1} primaryText="O-" />
                 <MenuItem value={2} primaryText="O+" />
+                <MenuItem value={3} primaryText="A-" />
+                <MenuItem value={4} primaryText="A+" />
+                <MenuItem value={5} primaryText="B-" />
+                <MenuItem value={6} primaryText="B+" />
+                <MenuItem value={7} primaryText="AB-" />
+                <MenuItem value={8} primaryText="AB+" />  
               </SelectField>
               <SelectField
                 floatingLabelText="sex"

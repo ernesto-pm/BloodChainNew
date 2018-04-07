@@ -10,6 +10,7 @@ import { Provider } from "react-redux";
 import appReducer from "./reducers";
 import PatientForm from "./PatientForm";
 import Transactions from "./Transactions";
+import PatientDetail from "./PatientDetail";
 
 const store = createStore(appReducer);
 
@@ -28,6 +29,11 @@ class App extends Component {
               exact
               path="/user/:id/transactions"
               component={Transactions}
+            />
+            <Route
+              exact
+              path="/user/:id/patientDetail"
+              component={PatientDetail}
             />
           </div>
         </BrowserRouter>
