@@ -37,9 +37,9 @@ class BloodPayload {
             let name = payload[1];
             let agentCreationPayload = new CreateAgentPayload(name);
 
-            if(!agentCreationPayload.name) {
-                throw new InvalidTransaction('Name is required');
-            }
+            if(!agentCreationPayload.name) throw new InvalidTransaction('Name is required');
+
+            if (agentCreationPayload.name.indexOf('|') !== -1) throw new InvalidTransaction('Name cannot contain "|"')
 
             return agentCreationPayload;
         }
