@@ -8,34 +8,29 @@ const signer = new CryptoFactory(context).newSigner(privateKey)
 //let payload = ["idUno","tempDos","weightTres","create"]
 
 // Theory if payload is CREATE_AGENT then we need just one extra
-let payload = ["un0-1d", "CREATE_AGENT", "HospitalAngeles"]
+let payload = ["CREATE_AGENT", "MedicaSur"]
 
-let id = payload[0]
+let id = payload[1]
 payload = Buffer.from(payload.join(','))
 
 const createHash = require('crypto').createHash
 const protobuf = require('sawtooth-sdk').protobuf
 
+const hash = (x) => crypto.createHash('sha512').update(x).digest('hex').toLowerCase().substring(0, 64)
 
-// Function that creates a new hash for parameter 'x'
-const createBloodHash = (x) => crypto.createHash('sha512').update(x).digest('hex').toLowerCase().substring(0, 64)
-
-// Custom transaction family we are creating
 const BLOOD_FAMILY = 'blood'
 
-// Creates the hash corresponding to the transaction family
-const BLOOD_NAMESPACE = createBloodHash(BLOOD_FAMILY).substring(0, 6)
+const BLOOD_NAMESPACE = hash(BLOOD_FAMILY).substring(0, 6)
 
-// Paste bloodspace plus the hash generated
-const makeBloodAddress = (x) => BLOOD_NAMESPACE + createBloodHash(x)
+const makeAddress = (x) => BLOOD_NAMESPACE + hash(x)
 
-let bloodAddress = makeBloodAddress(id)
+let address = makeAddress(id)
 
 const transactionHeaderBytes = protobuf.TransactionHeader.encode({
     familyName: 'blood',
     familyVersion: '1.0',
-    inputs: [bloodAddress],
-    outputs: [bloodAddress],
+    inputs: [address],
+    outputs: [address],
     signerPublicKey: signer.getPublicKey().asHex(),
     batcherPublicKey: signer.getPublicKey().asHex(),
     payloadSha512: createHash('sha512').update(payload).digest('hex')

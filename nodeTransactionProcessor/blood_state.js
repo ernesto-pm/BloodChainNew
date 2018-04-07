@@ -1,6 +1,7 @@
 'use strict'
 
 const crypto = require('crypto')
+const {InvalidTransaction} = require('sawtooth-sdk/processor/exceptions')
 
 class BloodState {
 
@@ -10,101 +11,99 @@ class BloodState {
         this.timeout        = 500 //ms
     }
 
-    getDonation(id) {
-        return this.loadDonations(id).then((donations) => {
-            console.log(donations)
-            donations.get(id)
-        })
+    getAgent(name) {
+        return this.loadAgents(name).then((agents) => agents.get(name))
     }
 
-    createDonation(id, donation) {
-        let address = makeBloodAddress(id)
+    createAgent(name) {
+        let address = makeAddress(name)
 
-        return this.loadDonations(id).then( (donations) => {
-            donations.set(id, donation)
-            return donations
-        }).then( (donations) => {
-            let data = serialize(donations)
+        return this.loadAgents(name)
+            .then(
+                (agents) => {
+                    agents.set(name, name)
+                    return agents
+                })
+            .then(
+                (agents) => {
+                    let data = serializeAgent(agents)
 
-            this.addressCache.set(address, data)
-            let entries = {
-                [address]: data
-            }
+                    this.addressCache.set(address, data)
+                    let entries = {
+                        [address] : data
+                    }
 
-            return this.context.setState(entries, this.timeout)
-        })
+                    console.log("Setting agent in blockchain state... please check console for details/errors")
+                    return this.context.setState(entries, this.timeout)
+                })
+
     }
 
-    loadDonations(id) {
-        let address = makeBloodAddress(id)
+    loadAgents(name) {
+        let address = makeAddress(name)
 
         if(this.addressCache.has(address)) {
-            //console.log("******** Address cache contains address *******")
+            // Contains address but that slot doesn't have anything inside it
             if(this.addressCache.get(address) === null) {
-                return Promise.resolve(new Map([]))
+                return Promise.resolve(new Map([])) // return a new map with an empty array inside it
             } else {
-                return Promise.resolve(deserialize(this.addressCache.get(address)))
+                return Promise.resolve(deserializeAgent(this.addressCache.get(address)))
             }
-
         } else {
-            //console.log("******** Address cache does not contain address *******")
+            // First get state in the specified timeout on the specified address
+            // We get a result of values for that address inside the context
+            // Check if the value in the address is empy, then set it to null and return a new empty iterable map
+            // Else transform that value in the address to a string and return it with the deserialize function
             return this.context.getState([address], this.timeout)
-                .then((addressValues) => {
-                    if(!addressValues[address].toString()) {
-                        this.addressCache.set(address, null)
-                        return new Map([])
-                    } else {
-                        let data = addressValues[address].toString()
-                        this.addressCache.set(address, data)
-                        return deserialize(data)
-                    }
-                })
+                .then(
+                    (addressValues) => {
+                        if(!addressValues[address].toString()) {
+                            this.addressCache.set(address, null)
+                            return new Map([])
+                        } else {
+                            let data = addressValues[address].toString()
+                            this.addressCache.set(address, data)
+                            return deserializeAgent(data)
+                        }
+                    })
         }
     }
 
+
 }
 
-const AGENT = 'ae'
 
-// Function that creates a new hash for parameter 'x'
-const createHash = (x) => crypto.createHash('sha512').update(x).digest('hex').toLowerCase().substring(0, 64)
+const hash = (x) => crypto.createHash('sha512').update(x).digest('hex').toLowerCase().substring(0, 64)
 
-const createSmallerHash = (x) => crypto.createHash('sha512').update(x).digest('hex').toLowerCase().substring(0, 62)
-
-// Custom transaction family we are creating
 const BLOOD_FAMILY = 'blood'
 
-// Creates the hash corresponding to the transaction family
-const BLOOD_NAMESPACE = createHash(BLOOD_FAMILY).substring(0, 6)
+const BLOOD_NAMESPACE = hash(BLOOD_FAMILY).substring(0, 6)
 
-// Paste bloodspace plus the hash generated
-const makeBloodAddress = (x) => BLOOD_NAMESPACE + createHash(x)
-
-const makeAgentAddress = (id) => BLOOD_NAMESPACE + AGENT + createSmallerHash(id)
-
-const deserialize = (data) => {
-    let bloodArray = data.split('|')
-        .map(x => x.split(','))
-        .map(x => [x[0], {id: x[0], blood: x[1]}])
-    return new Map(bloodArray)
-}
-
-const serialize = (entries) => {
-    let bloodStrings = []
-    for(let entry of entries) {
-        let ID      = entry[0]
-        let blood   = entry[1]
-        bloodStrings.push([ID, blood].join(','))
-    }
-
-    bloodStrings.sort()
-
-    return Buffer.from(bloodStrings.join('|'))
-}
-
+const makeAddress = (x) => BLOOD_NAMESPACE + hash(x)
 
 module.exports = {
     BLOOD_NAMESPACE,
     BLOOD_FAMILY,
     BloodState
+}
+
+// All agents inside the blockchain are going to be stored inside the blockchain with its values separated by a |
+const serializeAgent = (agents) => {
+    let agentStrs = []
+    for(let nameAgent of agents) {
+        let name = nameAgent[0]
+        agentStrs.push([name].join(','))
+    }
+
+    agentStrs.sort()
+
+    return Buffer.from(agentStrs.join('|'))
+}
+
+// Deserialize data based on the serialization method above, returns a map with all agents deserialized
+const deserializeAgent = (data) => {
+    let agentsIterable = data.split('|').map(x => x.split(','))
+        .map(x => [x[0], {name: x[0]}])
+
+    return new Map(agentsIterable)
 }

@@ -1,13 +1,12 @@
 'use strict'
 
-const TransactionHandler    = require('sawtooth-sdk/processor/handler').TransactionHandler
-const InvalidTransaction    = require('sawtooth-sdk/processor/exceptions').InvalidTransaction
+const { TransactionHandler } = require('sawtooth-sdk/processor/handler')
+const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions')
+
 const BloodPayload          = require('./blood_payload').BloodPayload
 const CreateAgentPayload    = require('./blood_payload').CreateAgentPayload
 
-const BloodState        = require('./blood_state').BloodState
-const BLOOD_FAMILY      = require('./blood_state').BLOOD_FAMILY
-const BLOOD_NAMESPACE   = require('./blood_state').BLOOD_NAMESPACE
+const { BLOOD_NAMESPACE, BLOOD_FAMILY, BloodState } = require('./blood_state')
 
 
 class BloodHandler extends TransactionHandler {
@@ -18,50 +17,30 @@ class BloodHandler extends TransactionHandler {
     apply(transaction, context) {
 
         let payload = BloodPayload.fromBytes(transaction.payload)
+        let bloodState = new BloodState(context)
 
+        // Create Agent
         if(payload instanceof CreateAgentPayload) {
-            //console.log("Payload is Instance of Create Agent")
-            //console.log("Payload ->", payload);
-        }
+            console.log("Received Creation request for new Agent")
 
-
-
-        /*
-        let bloodState  = new BloodState(context)
-
-        if(payload.action === 'create') {
-            return bloodState.getDonation(payload.id)
-                .then((donation) => {
-                    if(donation !== undefined) {
-                        throw new InvalidTransaction('Invalid Action: Blood donation already exists')
-                    }
-
-                    let createdDonation = {
-                        id: payload.id,
-                        blood: {
-                            temperature: payload.temperature,
-                            weight: payload.weight
+            return bloodState.getAgent(payload.name)
+                .then(
+                    (agent) => {
+                        if(agent !== undefined) {
+                            throw new InvalidTransaction('Invalid Action: Agent already exists')
                         }
+
+                        let createdAgent = {
+                            name: payload.name
+                        }
+
+                        console.log("Attempting to create agent")
+                        return bloodState.createAgent(payload.name, createdAgent)
                     }
-
-                    console.log("Blood donation registered succesfully")
-
-                    return bloodState.createDonation(payload.id, createdDonation)
-                })
-
-        } else if(payload.action === 'update') {
-
-        } else if(payload.action === 'finalize') {
-
-        } else {
-            throw new InvalidTransaction('Invalid action')
+                )
         }
-        //console.log("++++ Transaction ++++")
-        //console.log(transactionProcessRequest)
 
-        //console.log("++++ Context ++++")
-        //console.log(context)
-        */
+        // todo add additional functionalities
     }
 }
 
