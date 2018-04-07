@@ -31,7 +31,7 @@ class BloodPayload {
         let action  = payload[0]
 
         if(action === "CREATE_AGENT") {
-            // If action was Create Agent, payload should just contain the name of the Agent apart from the id and action
+            // If action was Create Agent, payload should just contain the name of the Agent
             if(payload.length !== 2) throw new InvalidTransaction('Invalid payload serialization')
 
             let name = payload[1];
