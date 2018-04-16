@@ -7,8 +7,9 @@ const signer = new CryptoFactory(context).newSigner(privateKey)
 
 //let payload = ["idUno","tempDos","weightTres","create"]
 
-// Theory if payload is CREATE_AGENT then we need just one extra
-let payload = ["CREATE_AGENT", "MedicaSur"]
+// For creating agents you specify the action, name, and type (Hospital, Banco de donacion)
+let payload = ["CREATE_AGENT", "Medica", "HOSPITAL"]
+//let payload = ["CREATE_DONATION", "Medica", "30", "1", "O+"]
 
 let id = payload[1]
 payload = Buffer.from(payload.join(','))
@@ -43,6 +44,8 @@ const transaction = protobuf.Transaction.create({
     headerSignature: signature,
     payload: payload
 })
+
+console.log(payload)
 
 const transactions = [transaction]
 

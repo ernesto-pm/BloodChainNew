@@ -15,13 +15,13 @@ class BloodState {
         return this.loadAgents(name).then((agents) => agents.get(name))
     }
 
-    createAgent(name) {
+    createAgent(name, agent) {
         let address = makeAddress(name)
 
         return this.loadAgents(name)
             .then(
                 (agents) => {
-                    agents.set(name, name)
+                    agents.set(name, agent)
                     return agents
                 })
             .then(
@@ -92,7 +92,8 @@ const serializeAgent = (agents) => {
     let agentStrs = []
     for(let nameAgent of agents) {
         let name = nameAgent[0]
-        agentStrs.push([name].join(','))
+        let agent = nameAgent[1]
+        agentStrs.push([name, agent.type].join(','))
     }
 
     agentStrs.sort()
@@ -103,7 +104,7 @@ const serializeAgent = (agents) => {
 // Deserialize data based on the serialization method above, returns a map with all agents deserialized
 const deserializeAgent = (data) => {
     let agentsIterable = data.split('|').map(x => x.split(','))
-        .map(x => [x[0], {name: x[0]}])
+        .map(x => [x[0], {name: x[0], type: x[1]}])
 
     return new Map(agentsIterable)
 }

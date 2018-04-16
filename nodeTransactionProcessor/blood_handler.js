@@ -27,11 +27,13 @@ class BloodHandler extends TransactionHandler {
                 .then(
                     (agent) => {
                         if(agent !== undefined) {
+                            console.log("Agent already Exists: ", agent)
                             throw new InvalidTransaction('Invalid Action: Agent already exists')
                         }
 
                         let createdAgent = {
-                            name: payload.name
+                            name: payload.name,
+                            type: payload.type
                         }
 
                         console.log("Attempting to create agent")
