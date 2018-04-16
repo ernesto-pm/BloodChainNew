@@ -13,6 +13,7 @@ let payload = ["CREATE_DONATION","wawitaDonaciones","Medica", "-5", "1", "O+"]
 
 let id = payload[1]
 payload = Buffer.from(payload.join(','))
+console.log(payload.toString())
 
 const createHash = require('crypto').createHash
 const protobuf = require('sawtooth-sdk').protobuf
