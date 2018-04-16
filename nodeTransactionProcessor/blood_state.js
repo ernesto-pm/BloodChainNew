@@ -11,12 +11,15 @@ class BloodState {
         this.timeout        = 500 //ms
     }
 
+
+
+    // Agents
     getAgent(name) {
         return this.loadAgents(name).then((agents) => agents.get(name))
     }
 
     createAgent(name, agent) {
-        let address = makeAddress(name)
+        let address = makeAgentAddress(name)
 
         return this.loadAgents(name)
             .then(
@@ -40,7 +43,7 @@ class BloodState {
     }
 
     loadAgents(name) {
-        let address = makeAddress(name)
+        let address = makeAgentAddress(name)
 
         if(this.addressCache.has(address)) {
             // Contains address but that slot doesn't have anything inside it
@@ -69,6 +72,63 @@ class BloodState {
         }
     }
 
+    getDonation(id) {
+        return this.loadDonations(id).then((donations) => donations.get(id))
+    }
+
+    createDonations(id, donation) {
+        let address = makeDonationAddress(id)
+
+        return this.loadDonations(id)
+            .then(
+                (donations) => {
+                    donations.set(id, donation)
+                    return donations
+                })
+            .then(
+                (donations) => {
+                    let data = serializeDonation(donations)
+
+                    this.addressCache.set(address, data)
+                    let entries = {
+                        [address] : data
+                    }
+
+                    console.log("Setting donation in blockchain state... please check console for details/errors")
+                    return this.context.setState(entries, this.timeout)
+                })
+    }
+
+    loadDonations(id) {
+        let address = makeDonationAddress(id)
+
+        if(this.addressCache.has(address)) {
+            // Contains address but that slot doesn't have anything inside it
+            if(this.addressCache.get(address) === null) {
+                return Promise.resolve(new Map([])) // return a new map with an empty array inside it
+            } else {
+                return Promise.resolve(deserializeDonation(this.addressCache.get(address)))
+            }
+        } else {
+            // First get state in the specified timeout on the specified address
+            // We get a result of values for that address inside the context
+            // Check if the value in the address is empy, then set it to null and return a new empty iterable map
+            // Else transform that value in the address to a string and return it with the deserialize function
+            return this.context.getState([address], this.timeout)
+                .then(
+                    (addressValues) => {
+                        if(!addressValues[address].toString()) {
+                            this.addressCache.set(address, null)
+                            return new Map([])
+                        } else {
+                            let data = addressValues[address].toString()
+                            this.addressCache.set(address, data)
+                            return deserializeDonation(data)
+                        }
+                    })
+        }
+    }
+
 
 }
 
@@ -80,6 +140,9 @@ const BLOOD_FAMILY = 'blood'
 const BLOOD_NAMESPACE = hash(BLOOD_FAMILY).substring(0, 6)
 
 const makeAddress = (x) => BLOOD_NAMESPACE + hash(x)
+
+const makeAgentAddress = (x) => BLOOD_NAMESPACE + hash(x + 'ae')
+const makeDonationAddress = (x) => BLOOD_NAMESPACE + hash(x + 'dn')
 
 module.exports = {
     BLOOD_NAMESPACE,
@@ -107,4 +170,25 @@ const deserializeAgent = (data) => {
         .map(x => [x[0], {name: x[0], type: x[1]}])
 
     return new Map(agentsIterable)
+}
+
+// id, agentOwner, temperature, weight, bloodType
+const serializeDonation = (donations) => {
+    let donationStrs = []
+    for(let nameDonation of donations) {
+        let id = nameDonation[0]
+        let donation = nameDonation[1]
+        donationStrs.push([id, donation.agentOwner, donation.temperature, donation.weight, donation.bloodType].join(','))
+    }
+
+    donationStrs.sort()
+
+    return Buffer.from(donationStrs.join('|'))
+}
+
+const deserializeDonation = (data) => {
+    let donationsIterable = data.split('|').map(x => x.split(','))
+        .map(x => [x[0], {id: x[0], agentOwner: x[1], temperature: x[2], weight: x[3], bloodType: x[4]}])
+
+    return new Map(donationsIterable)
 }

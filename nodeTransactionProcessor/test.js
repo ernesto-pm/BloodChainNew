@@ -8,8 +8,8 @@ const signer = new CryptoFactory(context).newSigner(privateKey)
 //let payload = ["idUno","tempDos","weightTres","create"]
 
 // For creating agents you specify the action, name, and type (Hospital, Banco de donacion)
-let payload = ["CREATE_AGENT", "Medica", "HOSPITAL"]
-//let payload = ["CREATE_DONATION", "Medica", "30", "1", "O+"]
+//let payload = ["CREATE_AGENT", "wawitaDonaciones", "Hospital Angeles"]
+let payload = ["CREATE_DONATION","wawitaDonaciones","Medica", "-5", "1", "O+"]
 
 let id = payload[1]
 payload = Buffer.from(payload.join(','))
@@ -23,7 +23,8 @@ const BLOOD_FAMILY = 'blood'
 
 const BLOOD_NAMESPACE = hash(BLOOD_FAMILY).substring(0, 6)
 
-const makeAddress = (x) => BLOOD_NAMESPACE + hash(x)
+const makeAddress = (x) => BLOOD_NAMESPACE + hash(x + 'dn')
+//const makeAddress = (x) => BLOOD_NAMESPACE + hash(x + 'ae')
 
 let address = makeAddress(id)
 
@@ -45,7 +46,7 @@ const transaction = protobuf.Transaction.create({
     payload: payload
 })
 
-console.log(payload)
+//console.log(payload)
 
 const transactions = [transaction]
 

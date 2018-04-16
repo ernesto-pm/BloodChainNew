@@ -15,11 +15,12 @@ class CreateAgentPayload {
 }
 
 class CreateDonationPayload {
-    constructor(agentOwner, temperature, weight, bloodType) {
-        this.agentOwner = agentOwner;
-        this.temperature = temperature;
-        this.weight = weight;
-        this.bloodType = bloodType;
+    constructor(id, agentOwner, temperature, weight, bloodType) {
+        this.id             = id;
+        this.agentOwner     = agentOwner;
+        this.temperature    = temperature;
+        this.weight         = weight;
+        this.bloodType      = bloodType;
     }
 }
 
@@ -46,15 +47,17 @@ class BloodPayload {
 
         } else if (action === "CREATE_DONATION") {
 
-            if(payload.length !== 5) throw new InvalidTransaction('Invalid payload serialization')
+            if(payload.length !== 6) throw new InvalidTransaction('Invalid payload serialization')
 
-            let agentOwner = payload[1]
-            let temperature = payload[2]
-            let weight = payload[3]
-            let bloodType = payload[4]
+            let id          = payload[1]
+            let agentOwner  = payload[2]
+            let temperature = payload[3]
+            let weight      = payload[4]
+            let bloodType   = payload[5]
 
-            let donationCreationPayload = new CreateDonationPayload(agentOwner, temperature, weight, bloodType);
+            let donationCreationPayload = new CreateDonationPayload(id, agentOwner, temperature, weight, bloodType);
 
+            if(!donationCreationPayload.id)             throw new InvalidTransaction('ID is required');
             if(!donationCreationPayload.agentOwner)     throw new InvalidTransaction('Owner is required');
             if(!donationCreationPayload.temperature)    throw new InvalidTransaction('Temperature is required');
             if(!donationCreationPayload.weight)         throw new InvalidTransaction('Weight is required');
