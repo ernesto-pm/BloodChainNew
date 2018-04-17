@@ -1,0 +1,29 @@
+{
+  "name": "bloodblockchain-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ketzia/NodeServer.git"
+  },
+  "author": "Ketzia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ketzia/NodeServer/issues"
+  },
+  "homepage": "https://github.com/ketzia/NodeServer#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.2",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.2.1",
+    "method-override": "^2.3.10",
+    "mongoose": "^5.0.15",
+    "sawtooth-sdk": "^1.0.2"
+  }
+}
