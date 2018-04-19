@@ -1,15 +1,16 @@
 const createContext = require('sawtooth-sdk/signing').createContext
 const CryptoFactory = require('sawtooth-sdk/signing').CryptoFactory
 const crypto        = require('crypto')
-const context = createContext('secp256k1')
+const context       = createContext('secp256k1')
 const privateKey = context.newRandomPrivateKey()
 const signer = new CryptoFactory(context).newSigner(privateKey)
 
 //let payload = ["idUno","tempDos","weightTres","create"]
 
 // For creating agents you specify the action, name, and type (Hospital, Banco de donacion)
-//let payload = ["CREATE_AGENT", "wawitaDonaciones", "Hospital Angeles"]
-let payload = ["CREATE_DONATION","wawitaDonaciones","Medica", "-5", "1", "O+"]
+// let payload = ["CREATE_AGENT", "donaciones", "Hospital Angeles"]
+// ID has to be unique
+let payload = ["CREATE_DONATION","0482-A394-A33","Medica", "-5", "1", "O+"]
 
 let id = payload[1]
 payload = Buffer.from(payload.join(','))

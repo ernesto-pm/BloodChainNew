@@ -1,5 +1,7 @@
 const {decodePayload, getBlocks} = require('../utils/blockchainUtils')
 const {createContext, CryptoFactory} = require('sawtooth-sdk/signing')
+const {BlockchainProcessor} = require('../utils/blockchainUtils')
+const request = require('request')
 const User = require('../models/User')
 
 exports.createAgent = (req,res) =>{
@@ -21,16 +23,32 @@ exports.createAgent = (req,res) =>{
     user.address   = req.body.address;
     user.userType  = req.body.userType;
     user.publicKey = publicKey;
+    user.privateKey = privateKey.asHex();
     user.setPassword(req.body.password);
 
-    user.save(function(err, user) {
-        if(err) return res.status(500).send({err: err});
-        return res.status(200).send({
-            publicKey: publicKey,
-            privateKey: privateKey
-        })
-    })
+    let processor = new BlockchainProcessor(user.privateKey);
+    let batchListBytes = processor.createAgentAction(user.username, user.userType);
 
+    request.post({
+        url: 'http://localhost:8024/batches',
+        body: batchListBytes,
+        headers: {'Content-Type': 'application/octet-stream'}
+        },
+        (err, response) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).send({err: err});
+            }
+
+            user.save(function(err, user) {
+                if(err) {
+                    console.log(err);
+                    return res.status(500).send({err: err});
+                }
+                return res.status(200).send({user: user, blockchainResponse: response});
+            })
+        }
+    )
 
 };
 

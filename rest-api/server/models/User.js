@@ -27,6 +27,10 @@ const User = new Schema(
             type: String,
             required: true
         },
+        privateKey: {
+            type: String,
+            required: true
+        },
         hash: {
             type: String
         },
