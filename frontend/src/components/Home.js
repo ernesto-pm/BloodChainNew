@@ -15,51 +15,54 @@ import List from "material-ui/List";
 import ListItem from "material-ui/List/ListItem";
 
 const style = {
-  marginRight: 20
+    marginRight: 20
 };
 class Home extends Component {
-  render() {
-    const { patients } = this.props;
-    return (
-      <div>
-        <MuiThemeProvider>
-          <NavBar />
-        </MuiThemeProvider>
-        <MuiThemeProvider>
-          <List>
-            <ListItem disabled={true} leftAvatar={<Avatar src={Logo} />}>
-              <h3>Hospital Ángeles</h3>
-            </ListItem>
-          </List>
-        </MuiThemeProvider>
+    render() {
+        const { patients } = this.props;
+        return (
+            <div>
+                <MuiThemeProvider>
+                    <NavBar />
+                </MuiThemeProvider>
+                <MuiThemeProvider>
+                    <List>
+                        <ListItem
+                            disabled={true}
+                            leftAvatar={<Avatar src={Logo} />}
+                        >
+                            <h3>Hospital Ángeles</h3>
+                        </ListItem>
+                    </List>
+                </MuiThemeProvider>
 
-        <br />
-        <MuiThemeProvider>
-          <div className="patientList">
-            <PatientList patients={patients} />
-          </div>
-        </MuiThemeProvider>
-        <div className="addIcon">
-          <MuiThemeProvider>
-            <FloatingActionButton
-              secondary={true}
-              style={style}
-              containerElement={<Link to="/patients/new" />}
-            >
-              <AddIcon />
-            </FloatingActionButton>
-          </MuiThemeProvider>
-        </div>
-      </div>
-    );
-  }
+                <br />
+                <MuiThemeProvider>
+                    <div className="patientList">
+                        <PatientList patients={patients} />
+                    </div>
+                </MuiThemeProvider>
+                <div className="addIcon">
+                    <MuiThemeProvider>
+                        <FloatingActionButton
+                            secondary={true}
+                            style={style}
+                            containerElement={<Link to="/patients/new" />}
+                        >
+                            <AddIcon />
+                        </FloatingActionButton>
+                    </MuiThemeProvider>
+                </div>
+            </div>
+        );
+    }
 }
 
 const withRedux = connect(
-  state => ({
-    patients: selectors.getPatientList(state)
-  }),
-  null
+    state => ({
+        patients: selectors.getPatientList(state)
+    }),
+    null
 );
 
 export default withRedux(Home);
