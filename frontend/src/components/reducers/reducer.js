@@ -9,7 +9,7 @@ const initialState = {
             id: 1,
             name: "Juan José Franco",
             bloodType: "A",
-            RH: "+",
+            rhType: "+",
             weight: 75,
             temperature: "30.2",
             degree: "C"
@@ -18,7 +18,7 @@ const initialState = {
             id: 2,
             name: "Susana Moreno",
             bloodType: "O",
-            RH: "-",
+            rhType: "-",
             weight: 60,
             temperature: "94.3",
             degree: "F"
@@ -30,16 +30,8 @@ const deleteUser = (arrayList, id) => _.filter(arrayList, user => user !== id);
 
 const handleAddUser = (state, { user }) => {
     const id = simpleId();
-
     console.log("USEEER", user);
     return user;
-    // ...state,
-    // userList: [...state.userList, id],
-    // users: {
-    //   ...state.users,
-    //   [id]:
-
-    // }
 };
 
 const handleUpdateUser = (state, { user }) => {
@@ -64,7 +56,7 @@ const handleDeleteUser = (state, { id }) => {
 
 const handleAddPatient = (state, { patient }) => {
     const id = simpleId();
-    console.log("Patient", patient);
+    console.log("Donation", patient);
     return {
         ...state,
         patientList: [...state.patientList, id],

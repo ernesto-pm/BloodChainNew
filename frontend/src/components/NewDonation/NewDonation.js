@@ -26,14 +26,14 @@ const style = {
 
 const initialState = {
     name: "",
-    bloodType: "A+",
+    bloodType: "A",
     bloodTypeValue: 1,
     RH: 1,
     rhType: "-",
-    weight: "",
-    temperature: "",
+    weight: 1.5,
+    temperature: 20,
     degreeValue: 1,
-    degree: ""
+    degree: "C"
 };
 class NewDonation extends Component {
     constructor(props) {
@@ -100,6 +100,14 @@ class NewDonation extends Component {
             degreeValue,
             degree
         };
+
+        const apiDonation = {
+            agentOwner: "loggeduser",
+            temperature: `${temperature}${degree}`,
+            weight: weight,
+            bloodType: `${bloodType}${rhType}`
+        };
+        console.log(apiDonation);
         this.props.onSubmit(donation);
         this.props.history.push("/home");
     };
@@ -154,21 +162,21 @@ class NewDonation extends Component {
                                     margin="normal"
                                     label="weight"
                                     floatingLabelText="Weight"
-                                    defaultValue="1"
                                     name="weight"
                                     onChange={this.handleChange.bind(this)}
                                     required
                                     type="number"
+                                    value={this.state.weight}
                                 />
                                 <br />
                                 <TextField
                                     margin="normal"
                                     label="temperature"
                                     floatingLabelText="Temperature"
-                                    name="weight"
+                                    name="temperature"
+                                    value={this.state.temperature}
                                     onChange={this.handleChange.bind(this)}
                                     required
-                                    defaultValue="90"
                                     type="number"
                                 />
                                 <br />
