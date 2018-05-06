@@ -5,7 +5,7 @@ import * as action from "./reducers/actions";
 import { selectors } from "./reducers";
 import NavBar from "./NavBar";
 import { MuiThemeProvider } from "material-ui/styles";
-import PatientList from "./PatientList";
+import DonationList from "./Agents/DonationList";
 import AddIcon from "material-ui/svg-icons/content/add";
 import FloatingActionButton from "material-ui/FloatingActionButton";
 import { Link } from "react-router-dom";
@@ -39,7 +39,7 @@ class Home extends Component {
                 <br />
                 <MuiThemeProvider>
                     <div className="patientList">
-                        <PatientList patients={patients} />
+                        <DonationList patients={patients} />
                     </div>
                 </MuiThemeProvider>
                 <div className="addIcon">
@@ -47,7 +47,7 @@ class Home extends Component {
                         <FloatingActionButton
                             secondary={true}
                             style={style}
-                            containerElement={<Link to="/patients/new" />}
+                            containerElement={<Link to="/donations/new" />}
                         >
                             <AddIcon />
                         </FloatingActionButton>

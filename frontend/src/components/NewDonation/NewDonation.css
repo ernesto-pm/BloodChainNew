@@ -1,0 +1,17 @@
+.newDonationCard {
+    width: 40%;
+    margin-left: 4%;
+    float: left;
+    position: relative;
+    height: 400px;
+    overflow-y: auto;
+}
+
+.newDonationCardTitle {
+    background-color: #e91e63;
+    width: 100%;
+    top: -10px;
+    color: #fff;
+    font-size: 1em;
+    font-weight: lighter;
+}
