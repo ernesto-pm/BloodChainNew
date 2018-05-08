@@ -212,10 +212,10 @@ class Singup extends Component {
                         <br/>
 
                         <RaisedButton
-                            label = "Go to Homepage"
+                            label = "Login Now"
                             primary = {true}
                             onClick = {this.handleNext}
-                            containerElement={<Link to="/home" />}
+                            containerElement={<Link to="/login" />}
                         />
                     </div>
                 )

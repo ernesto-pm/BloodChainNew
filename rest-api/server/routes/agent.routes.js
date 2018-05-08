@@ -6,4 +6,7 @@ router.route('/agent')
     .get(jsonParser, AgentController.getAgents)
     .post(jsonParser, AgentController.createAgent);
 
+router.route('/agent/login')
+    .post(jsonParser, AgentController.agentLogin);
+
 module.exports = router;

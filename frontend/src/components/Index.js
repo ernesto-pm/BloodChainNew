@@ -14,8 +14,15 @@ import { MuiThemeProvider } from "material-ui/styles";
 import Logo from "../images/BChain.png";
 import RedBackground from "../images/RedBackground.jpg";
 import Particles from "react-particles-js";
+import AuthService from "../services/AuthService"
 
 class IndexComponent extends Component {
+
+    componentDidMount() {
+        console.log(AuthService.isLoggedIn())
+    }
+
+
     render() {
         return (
             <div style={{ height: "100%", widht: "100%" }}>

@@ -9,6 +9,7 @@ const { BLOOD_NAMESPACE, BLOOD_FAMILY, BloodState } = require('./blood_state')
 
 
 class BloodHandler extends TransactionHandler {
+
     constructor() {
         super(BLOOD_FAMILY, ['1.0'], BLOOD_NAMESPACE)
     }
@@ -55,7 +56,9 @@ class BloodHandler extends TransactionHandler {
                             agentOwner: payload.agentOwner,
                             temperature: payload.temperature,
                             weight : payload.weight,
-                            bloodType : payload.bloodType
+                            bloodGroup : payload.bloodGroup,
+                            bloodRH: payload.bloodRH,
+                            knownHealthIssues: payload.knownHealthIssues
                         }
 
                         console.log("Attempting to create donation", createdDonation)

@@ -1,126 +1,94 @@
-import React, { Component } from "react";
+import React, { Component }     from "react";
 import { withRouter, Redirect } from "react-router";
-import { Card, CardText } from "material-ui/Card";
-import { MuiThemeProvider } from "material-ui/styles";
-import Logo from "../images/BloodChain.png";
-import Send from "material-ui/svg-icons/content/send";
-import FloatingActionButton from "material-ui/FloatingActionButton";
-import TextField from "material-ui/TextField";
+import RaisedButton             from 'material-ui/RaisedButton';
+import TextField                from "material-ui/TextField";
+import NavBar                   from "./NavBar";
+import AuthService              from "../services/AuthService";
 import "./App.css";
-import _ from "lodash";
-import NavBar from "./NavBar";
-
-const style = {
-  marginLeft: "95%"
-};
 
 const initialState = {
-  users: [
-    {
-      id: 1,
-      username: "Hospital Angeles",
-      password: "1234",
-      type: "hospital"
-    },
-    {
-      id: 2,
-      username: "ernie",
-      password: "1234",
-      type: "hospital"
-    },
-    { id: 3, username: "itzi", password: "1234", type: "bank" },
-    { id: 4, username: "keki", password: "1234", type: "bank" }
-  ],
-  logged: false
+    username_error_text: '',
+    password_error_text: '',
+    redirect: false
 };
+
 class Login extends Component {
-  constructor(props) {
-    super();
-    this.state = initialState;
-  }
-  componentDidMount() {
-    this.setState(initialState);
-  }
-  handleChange = e => {
-    const { target: { name, value } } = e;
-    this.setState({ ...this.state, [name]: value });
-  };
-  handleSubmit = e => {
-    e.preventDefault();
-    const { username, password } = this.state;
-    this.confirmUser(username, password);
-  };
-
-  confirmUser = (username, passw) => {
-    _.find(this.state.users, user => {
-      if (user.username === username && user.password === passw) {
-        return this.setState({
-          ...initialState,
-          logged: true
-        });
-      } else {
-        return console.log("ERROR: User not found");
-      }
-    });
-  };
-
-  render() {
-    const logged = this.state.logged;
-
-    if (logged) {
-      return <Redirect to="/home" />;
+    constructor(props) {
+        super(props);
+        this.state = initialState;
+        this.login = this.login.bind(this);
     }
 
-    return (
-      <div>
-        <MuiThemeProvider>
-          <NavBar />
-        </MuiThemeProvider>
-        <MuiThemeProvider>
-          <div className="LoginForm">
-            <Card>
-              <img src={Logo} alt="" width=" 70%" />
-              <CardText>
-                <div
-                  style={{ padding: 16, marginBottom: 8, textAlign: "center" }}
-                >
-                  <form onSubmit={this.handleSubmit}>
-                    <TextField
-                      margin="username"
-                      label="username"
-                      placeholder="Username"
-                      name="username"
-                      onChange={this.handleChange.bind(this)}
-                      fullWidth
-                      required
-                    />
-                    <br />
-                    <TextField
-                      margin="password"
-                      label="password"
-                      placeholder="Password"
-                      name="password"
-                      type="password"
-                      onChange={this.handleChange.bind(this)}
-                      fullWidth
-                      required
-                    />
-                    <FloatingActionButton
-                      secondary={true}
-                      type="submit"
-                      style={style}
-                    >
-                      <Send />
-                    </FloatingActionButton>
-                  </form>
+    componentDidMount() {
+        if(AuthService.isLoggedIn()) {
+            this.setState({redirect : true});
+        }
+    }
+
+    login() {
+        let self = this;
+        let {username, password} = this.refs;
+        username = username.input.value;
+        password = password.input.value;
+
+        AuthService.userLogin({username: username, password: password}).then(
+            function success(res) {
+                self.setState({redirect: true});
+            },
+            function error(res) {
+
+            }
+        )
+    }
+
+
+    render() {
+
+        const {redirect} = this.state;
+
+        if(redirect) {
+            return <Redirect to='/home'/>
+        }
+
+        return (
+            <div>
+                <NavBar/>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-12">
+                            <br/>
+                            <h3>Login</h3>
+                            <hr/>
+                            <div>
+                                <TextField
+                                    floatingLabelText = "Input your Username"
+                                    fullWidth
+                                    ref = "username"
+                                    errorText={this.state.username_error_text}
+                                />
+
+                                <TextField
+                                    floatingLabelText = "Input your password"
+                                    fullWidth
+                                    ref = "password"
+                                    type = "password"
+                                    errorText={this.state.password_error_text}
+                                />
+
+
+                                <RaisedButton
+                                    label = "Login"
+                                    primary = {true}
+                                    onClick = {this.login}
+                                />
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </CardText>
-            </Card>
-          </div>
-        </MuiThemeProvider>
-      </div>
-    );
-  }
+            </div>
+        );
+    }
 }
 
 export default withRouter(Login);

@@ -11,8 +11,6 @@ class BloodState {
         this.timeout        = 500 //ms
     }
 
-
-
     // Agents
     getAgent(name) {
         return this.loadAgents(name).then((agents) => agents.get(name))
@@ -137,6 +135,7 @@ const hash = (x) => crypto.createHash('sha512').update(x).digest('hex').toLowerC
 
 const BLOOD_FAMILY = 'blood'
 
+// C8F47C
 const BLOOD_NAMESPACE = hash(BLOOD_FAMILY).substring(0, 6)
 
 const makeAddress = (x) => BLOOD_NAMESPACE + hash(x)
@@ -172,13 +171,13 @@ const deserializeAgent = (data) => {
     return new Map(agentsIterable)
 }
 
-// id, agentOwner, temperature, weight, bloodType
+// id, agentOwner, temperature, weight, bloodGroup, bloodRH, knownHealthIssues
 const serializeDonation = (donations) => {
     let donationStrs = []
     for(let nameDonation of donations) {
         let id = nameDonation[0]
         let donation = nameDonation[1]
-        donationStrs.push([id, donation.agentOwner, donation.temperature, donation.weight, donation.bloodType].join(','))
+        donationStrs.push([id, donation.agentOwner, donation.temperature, donation.weight, donation.bloodGroup, donation.bloodRH, donation.knownHealthIssues].join(','))
     }
 
     donationStrs.sort()
@@ -188,7 +187,7 @@ const serializeDonation = (donations) => {
 
 const deserializeDonation = (data) => {
     let donationsIterable = data.split('|').map(x => x.split(','))
-        .map(x => [x[0], {id: x[0], agentOwner: x[1], temperature: x[2], weight: x[3], bloodType: x[4]}])
+        .map(x => [x[0], {id: x[0], agentOwner: x[1], temperature: x[2], weight: x[3], bloodGroup: x[4], bloodRH: x[5], knownHealthIssues: x[6]}])
 
     return new Map(donationsIterable)
 }

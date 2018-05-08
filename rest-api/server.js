@@ -5,6 +5,7 @@ const methodOverride    = require('method-override');
 const routes            = require('./server/routes');
 const PORT = process.env.PORT || 8080;
 require('./server/config/db');
+require('./server/config/passport');
 
 app.all('*', function(req,res,next){
    res.header("Access-Control-Allow-Origin", "*");

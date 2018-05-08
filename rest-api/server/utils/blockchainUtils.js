@@ -69,9 +69,9 @@ class BlockchainProcessor {
         return this.createBatchListBytes(address, payload)
     }
 
-    createDonationAction(id, agentOwner, temperature, weight, bloodType) {
+    createDonationAction(id, agentOwner, temperature, weight, bloodGroup, bloodRH, knownHealthIssues) {
         let address = makeDonationAddress(id)
-        let payload = ["CREATE_DONATION", id, agentOwner, temperature, weight, bloodType]
+        let payload = ["CREATE_DONATION", id, agentOwner, temperature, weight, bloodGroup, bloodRH, knownHealthIssues]
         payload = Buffer.from(payload.join(','))
 
         return this.createBatchListBytes(address, payload)

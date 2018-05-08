@@ -1,5 +1,6 @@
 const {decodePayload} = require('../utils/blockchainUtils')
 const {CreateDonationPayload, CreateAgentPayload} = require('../../../nodeTransactionProcessor/blood_payload')
+const axios = require('axios')
 
 exports.decodeBlock = (req, res) => {
     if(!req.body.block) return res.status(401).send({err: "Error, block to decode must be passed as body parameter"})
@@ -26,4 +27,19 @@ exports.decodeBlock = (req, res) => {
     }
 
     return res.status(200).send(payload)
+}
+
+
+exports.getBatchStatus = (req, res) => {
+    if(!req.body.batch_id) return res.status(401).send({err: "Error, no batch id specified"})
+
+    axios.get(`http://127.0.0.1:8024/batch_statuses?id=${req.body.batch_id}`).then(
+        function success(response) {
+            return res.status(200).send(response.data.data)
+        },
+        function error() {
+            res.status(500).send({err: "Error querying the blockchain"})
+        }
+    )
+
 }

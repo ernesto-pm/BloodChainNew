@@ -50,9 +50,6 @@ User.methods.setPassword = function(password){
 };
 
 User.methods.validPassword = function(password){
-    console.log("Password")
-    console.log(password);
-    console.log(this.salt);
     let hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
     return this.hash === hash;
 };
@@ -63,9 +60,10 @@ User.methods.generateJwt = function(){
 
     let token = jwt.sign({
         _id: this._id,
-        first_name: this.first_name,
-        last_name: this.last_name,
-        email: this.email,
+        username: this.username,
+        fullName: this.fullName,
+        address: this.address,
+        userType: this.userType,
         exp: parseInt(expiry.getTime() / 1000)
     } , process.env.JWT_SECRET);
 

@@ -10,7 +10,7 @@ const signer = new CryptoFactory(context).newSigner(privateKey)
 // For creating agents you specify the action, name, and type (Hospital, Banco de donacion)
 // let payload = ["CREATE_AGENT", "donaciones", "Hospital Angeles"]
 // ID has to be unique
-let payload = ["CREATE_DONATION","0482-A394-A33","Medica", "-5", "1", "O+"]
+let payload = ["CREATE_DONATION","0482-A394-A33","Medica", "-5", "1", "O", "+","diabetes;cancer;sindrome de la vaca loca"]
 
 let id = payload[1]
 payload = Buffer.from(payload.join(','))

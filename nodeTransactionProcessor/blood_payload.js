@@ -15,12 +15,14 @@ class CreateAgentPayload {
 }
 
 class CreateDonationPayload {
-    constructor(id, agentOwner, temperature, weight, bloodType) {
-        this.id             = id;
-        this.agentOwner     = agentOwner;
-        this.temperature    = temperature;
-        this.weight         = weight;
-        this.bloodType      = bloodType;
+    constructor(id, agentOwner, temperature, weight, bloodGroup, bloodRH, knownHealthIssues) {
+        this.id                 = id;
+        this.agentOwner         = agentOwner;
+        this.temperature        = temperature;
+        this.weight             = weight;
+        this.bloodGroup         = bloodGroup;
+        this.bloodRH            = bloodRH;
+        this.knownHealthIssues  = knownHealthIssues;
     }
 }
 
@@ -47,21 +49,25 @@ class BloodPayload {
 
         } else if (action === "CREATE_DONATION") {
 
-            if(payload.length !== 6) throw new InvalidTransaction('Invalid payload serialization')
+            if(payload.length !== 8) throw new InvalidTransaction('Invalid payload serialization')
 
-            let id          = payload[1]
-            let agentOwner  = payload[2]
-            let temperature = payload[3]
-            let weight      = payload[4]
-            let bloodType   = payload[5]
+            let id                  = payload[1]
+            let agentOwner          = payload[2]
+            let temperature         = payload[3]
+            let weight              = payload[4]
+            let bloodGroup          = payload[5]
+            let bloodRH             = payload[6]
+            let knownHealthIssues   = payload[7]
 
-            let donationCreationPayload = new CreateDonationPayload(id, agentOwner, temperature, weight, bloodType);
+            let donationCreationPayload = new CreateDonationPayload(id, agentOwner, temperature, weight, bloodGroup, bloodRH, knownHealthIssues);
 
             if(!donationCreationPayload.id)             throw new InvalidTransaction('ID is required');
             if(!donationCreationPayload.agentOwner)     throw new InvalidTransaction('Owner is required');
             if(!donationCreationPayload.temperature)    throw new InvalidTransaction('Temperature is required');
             if(!donationCreationPayload.weight)         throw new InvalidTransaction('Weight is required');
-            if(!donationCreationPayload.bloodType)      throw new InvalidTransaction('Type is required');
+            if(!donationCreationPayload.bloodGroup)     throw new InvalidTransaction('Blood Group is required');
+            if(!donationCreationPayload.bloodRH)        throw new InvalidTransaction('Blood RH is required');
+            if(!donationCreationPayload.knownHealthIssues) throw new InvalidTransaction('Known health issues is required');
 
             return donationCreationPayload;
         }

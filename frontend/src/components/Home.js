@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router";
+import { withRouter, Redirect} from "react-router";
 import { connect } from "react-redux";
 import * as action from "./reducers/actions";
 import { selectors } from "./reducers";
@@ -14,55 +14,81 @@ import Logo from "../images/hospital2.svg";
 import List from "material-ui/List";
 import ListItem from "material-ui/List/ListItem";
 
+import AuthService from '../services/AuthService'
+import DataService from '../services/DataService'
+
 const style = {
     marginRight: 20
 };
+
+
 class Home extends Component {
+
+    constructor(props) {
+        super(props);
+        let currentUser = AuthService.currentUser()
+        this.state = {
+            currentUser: currentUser,
+            redirect: currentUser ? false : false,
+            donations: []
+        }
+    }
+
+    componentDidMount() {
+        let self = this;
+        DataService.getDonationsByOwner(this.state.currentUser.id).then(
+            function success(res) {
+                self.setState(...self.state, {donations: res.data.donations});
+            },
+            function error(res) {
+                console.error(res)
+            })
+    }
+
     render() {
-        const { patients } = this.props;
+
+        const {redirect, donations} = this.state;
+
+        if(redirect) {
+            return <Redirect to='/home'/>
+        }
+
+
         return (
             <div>
-                <MuiThemeProvider>
-                    <NavBar />
-                </MuiThemeProvider>
-                <MuiThemeProvider>
-                    <List>
-                        <ListItem
-                            disabled={true}
-                            leftAvatar={<Avatar src={Logo} />}
-                        >
-                            <h3>Hospital Ángeles</h3>
-                        </ListItem>
-                    </List>
-                </MuiThemeProvider>
 
-                <br />
-                <MuiThemeProvider>
-                    <div className="patientList">
-                        <DonationList patients={patients} />
-                    </div>
-                </MuiThemeProvider>
+                <NavBar />
+
+
+                <List>
+                    <ListItem
+                        disabled={true}
+                        leftAvatar={<Avatar src={Logo} />}
+                    >
+                        <h3>{this.state.currentUser.username} ({this.state.currentUser.fullName})</h3>
+                    </ListItem>
+                </List>
+
+                <br/>
+
+                <div className="patientList">
+                    <DonationList patients={donations} />
+                </div>
+
                 <div className="addIcon">
-                    <MuiThemeProvider>
-                        <FloatingActionButton
-                            secondary={true}
-                            style={style}
-                            containerElement={<Link to="/donations/new" />}
-                        >
-                            <AddIcon />
-                        </FloatingActionButton>
-                    </MuiThemeProvider>
+
+                    <FloatingActionButton
+                        secondary={true}
+                        style={style}
+                        containerElement={<Link to="/donations/new" />}
+                    >
+                        <AddIcon />
+                    </FloatingActionButton>
+
                 </div>
             </div>
         );
     }
 }
 
-const withRedux = connect(
-    state => ({
-        patients: selectors.getPatientList(state)
-    }),
-    null
-);
-
-export default withRedux(Home);
+export default Home;

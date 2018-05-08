@@ -3,6 +3,7 @@ const {createContext, CryptoFactory} = require('sawtooth-sdk/signing')
 const {BlockchainProcessor} = require('../utils/blockchainUtils')
 const request = require('request')
 const User = require('../models/User')
+const passport  = require('passport');
 
 exports.createAgent = (req,res) =>{
     if(!req.body.username) return res.status(400).send({err:"No name provided"});
@@ -51,6 +52,29 @@ exports.createAgent = (req,res) =>{
     )
 
 };
+
+
+
+exports.agentLogin = function(req, res) {
+    if(!req.body.username) return res.status(400).send({err: 'Username is required'});
+    if(!req.body.password) return res.status(400).send({err: 'Password is required'});
+
+    passport.authenticate('local' , (err, user, info) => {
+
+        if(err) return res.status(500).send({err : err});
+
+        if(user) {
+            let token = user.generateJwt(false, '','');
+            return res.status(200).send({token: token});
+        }else{
+            return res.status(401).send({err: info});
+        }
+
+    })(req , res);
+
+}
+
+
 
 exports.getAgents = function(req, res) {
 

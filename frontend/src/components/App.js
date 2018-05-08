@@ -16,6 +16,9 @@ import Donation from "./Transactions/Donation";
 const store = createStore(appReducer);
 
 class App extends Component {
+
+
+
     render() {
         return (
             <Provider store={store}>

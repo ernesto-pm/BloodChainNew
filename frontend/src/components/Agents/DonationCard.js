@@ -5,6 +5,8 @@ import ListItem from "material-ui/List/ListItem";
 import List from "material-ui/List/List";
 import Avatar from "material-ui/Avatar";
 import FloatingActionButton from "material-ui/FloatingActionButton";
+import RaisedButton from "material-ui/RaisedButton";
+
 import { Link } from "react-router-dom";
 import { MuiThemeProvider } from "material-ui/styles";
 import AddIcon from "material-ui/svg-icons/content/add";
@@ -12,14 +14,25 @@ import Dialog from "material-ui/Dialog";
 import PersonIcon from "material-ui-icons/Person";
 import { FlatButton } from "material-ui";
 import CheckIcon from "material-ui-icons/CheckCircle";
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+
+import axios from 'axios'
+import DataService from "../../services/DataService"
 
 const style = {
     marginRight: 20
 };
 class DonationCard extends Component {
+
+    constructor(props) {
+        super(props);
+        this.checkBlockchainStatus = this.checkBlockchainStatus.bind(this);
+    }
+
     state = {
         open: false,
-        redirect: false
+        redirect: false,
+        blockchain_status: ''
     };
 
     handleClickOpen = () => {
@@ -29,20 +42,28 @@ class DonationCard extends Component {
     handleClose = () => {
         this.setState({ open: false });
     };
+
     handleDonate = () => {
         console.log("DONATE!!!!");
         this.setState({
             redirect: true
         });
     };
+
+    checkBlockchainStatus = () => {
+        let self = this;
+        DataService.checkBatchStatus(this.props.patient.blockchain_batch_id).then(
+            function success(res) {
+                console.log(res)
+                self.setState(...self.state, {blockchain_status: res.data[0].status})
+            }
+        )
+    }
+
     render() {
-        const { redirect } = this.state;
 
-        if (redirect) {
-            return <Redirect to="/user/1/transactions" />;
-        }
+        const donation = this.props.patient;
 
-        const patient = this.props;
         const actions = [
             <FlatButton
                 label="Donate"
@@ -52,6 +73,7 @@ class DonationCard extends Component {
                 onClick={this.handleDonate}
             />
         ];
+
         return (
             <div className="card">
                 <List>
@@ -59,20 +81,44 @@ class DonationCard extends Component {
                         disabled={true}
                         leftAvatar={
                             <Avatar>
-                                {patient.patient.bloodType}
+                                {donation.bloodGroup}
                                 {"\t"}
-                                {patient.patient.rhType}
+                                {donation.bloodRH}
                             </Avatar>
                         }
                     >
                         <div className="container">
                             <h4>
-                                <b>{patient.patient.name}</b>
+                                <b>{donation.identifier}</b>
                             </h4>
-                            {patient.patient.bloodType} {patient.patient.RH}
-                            {patient.patient.weight} -{" "}
-                            {patient.patient.temperature}
-                            {patient.patient.degree}
+
+                            <p>
+                                Blood Type: {donation.bloodGroup} {donation.bloodRH}
+                            </p>
+
+                            <p>
+                                Temperature: {donation.temperature} ℃
+                            </p>
+
+                            <p>
+                                Weight: {donation.weight} kg
+                            </p>
+
+                            <p>
+                                Known Health Issues: { donation.knownHealthIssues.split(";").map( (hi) => (
+                                    <span>{hi} </span>
+                            ))}
+                            </p>
+
+                            <p>
+                                Blockchain Status: <span style={{color: "red"}}>{this.state.blockchain_status}</span>
+                            </p>
+
+                            <p>
+                                Blockchain ID: "{donation.blockchain_batch_id}"
+                            </p>
+
+
                             <div className="goIcon">
                                 <MuiThemeProvider>
                                     <FloatingActionButton
@@ -86,11 +132,16 @@ class DonationCard extends Component {
                             </div>
                         </div>
 
+                        <CardActions>
+                            <RaisedButton label="Check Blockchain Status" onClick={this.checkBlockchainStatus} primary = {true} />
+                        </CardActions>
+
                         <br />
                     </ListItem>
                 </List>
+
                 <Dialog
-                    title={patient.patient.name}
+                    title={donation.identifier}
                     actions={actions}
                     modal={false}
                     open={this.state.open}
@@ -99,25 +150,12 @@ class DonationCard extends Component {
                     <Avatar style={{ width: 60, height: 60 }}>
                         <PersonIcon style={{ width: 50, height: 50 }} />
                     </Avatar>
-                    <p> Owner:{" agentowner"}</p>
-                    <p>
-                        Name:
-                        {" " + patient.patient.name + " "}
-                    </p>
-                    <p>
-                        Blood Type:{" "}
-                        {" " +
-                            patient.patient.bloodType +
-                            patient.patient.rhType}
-                    </p>
-                    <p>
-                        Temperature:{" "}
-                        {" " +
-                            patient.patient.temperature +
-                            patient.patient.degree}
-                    </p>
-                    <p>Weight:{" " + patient.patient.weight}</p>
+                    <p> Owner: {donation.owner_agent} </p>
+
+
                 </Dialog>
+
+
             </div>
         );
     }
